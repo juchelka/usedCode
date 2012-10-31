@@ -73,40 +73,6 @@ public class UsedCode {
 		
 		return usage;
 	}
-/*	
-	public void loadUsage(CodeUsage usage)
-	{
-		for (FileUsage f : usage.values())
-		{
-			try {
-				DataObject file = this.getFile(f.file);
-				this.anotateFile(file, f.lines);
-			} catch (DataObjectNotFoundException ex) {
-				output.println(f.file + " not found");
-			}
-		}
-	}
-	
-	public void anotateFile(DataObject file, int[] lines)
-	{
-		LineCookie cookie = file.getLookup().lookup(LineCookie.class);
-		Line.Set lineSet = cookie.getLineSet();
-		for (int i : lines)
-		{
-			Line line = lineSet.getOriginal(i);
-			UsedCodeUsedAnnotation annotation = new UsedCodeUsedAnnotation();
-			annotation.attach(line);
-			output.println(file.getName());
-			output.println(i);
-		}
-	}
-
-	public DataObject getFile(String filename) throws DataObjectNotFoundException
-	{
-		FileObject file = this.root.getFileObject(filename);
-		return DataObject.find(file);
-	}
-*/	
 	
 	public CoverageVO coverage()
 	{

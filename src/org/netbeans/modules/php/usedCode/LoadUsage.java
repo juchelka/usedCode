@@ -1,4 +1,6 @@
-/* https://bitbucket.org/netbeans/main-silver */
+// https://bitbucket.org/netbeans/main-silver 
+// https://bitbucket.org/netbeans/main-silver/src/a8bb6947b7ee/php.project/src/org/netbeans/modules/php/project
+// https://bitbucket.org/netbeans/main-silver/src/479f53195a06/maven.coverage/src/org/netbeans/modules/maven/coverage/MavenCoverageProvider.java
 
 package org.netbeans.modules.php.usedCode;
 
@@ -7,16 +9,12 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.php.project.PhpProject;
-import org.netbeans.modules.php.project.connections.ConfigManager;
 import org.netbeans.modules.php.project.ui.codecoverage.PhpCoverageProvider;
 import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties;
 import org.openide.awt.ActionID;
@@ -25,7 +23,6 @@ import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.lookup.AbstractLookup;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 
@@ -61,14 +58,6 @@ public final class LoadUsage implements ActionListener {
 		} catch (IOException ex) {
 			Exceptions.printStackTrace(ex);
 		}
-		
-/*
-		for (Map<String, String> s : this.getProjectProperties().getConfigs().values())
-		{
-			io.getOut().println(s);
-		}
-*/		
-//		io.getOut().println(this.getProjectProperties().getConfigManager().currentConfiguration().getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_REMOTE));
 	}
 	
 	public FileObject getRoot()
