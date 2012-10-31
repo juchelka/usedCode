@@ -62,8 +62,8 @@ public final class LoadUsage implements ActionListener {
 	
 	public FileObject getRoot()
 	{
-		Collection sources = this.context.getLookup().lookupAll(Sources.class);
-		Iterator i = sources.iterator();
+		Collection<? extends Sources> sources = this.context.getLookup().lookupAll(Sources.class);
+		Iterator<? extends Sources> i = sources.iterator();
 		while (i.hasNext())
 		{
 			Sources source = (Sources) i.next();
@@ -88,7 +88,7 @@ public final class LoadUsage implements ActionListener {
 	
 	public PhpCoverageProvider getCoverageProvider()
 	{
-		return (PhpCoverageProvider) this.context.getLookup().lookup(PhpCoverageProvider.class);
+		return this.context.getLookup().lookup(PhpCoverageProvider.class);
 	}
 	
 	public PhpProjectProperties getProjectProperties()

@@ -76,8 +76,8 @@ public class UsedCode {
 	
 	public CoverageVO coverage()
 	{
-		HashMap mapping = this.getPathMapping();
-		CoverageVO cv = new CoverageVO();
+		HashMap<String,String> mapping = this.getPathMapping();
+		CoverageVO cv = new CoverageVO();		
 		for (FileUsage f : usage.values())
 		{
 			String usedPath = f.file;
@@ -85,7 +85,12 @@ public class UsedCode {
 			{
 				if (f.file.startsWith(remotePath.toString()))
 				{
-					usedPath = f.file.replaceFirst(remotePath.toString(), mapping.get(remotePath).toString());
+					String localPath = mapping.get((String) remotePath);
+					usedPath = f.file.replaceFirst(Pattern.quote(remotePath.toString()), localPath.replaceAll(Pattern.quote("\\"), "\\\\\\\\"));
+					if (System.getProperty("file.separator").equals("\\"))
+					{
+						usedPath = usedPath.replace('/', '\\');
+					}
 					log("Mapping used: " + usedPath);
 				}
 			}
@@ -107,23 +112,39 @@ public class UsedCode {
 		return cv;
 	}
 	
-	public HashMap getPathMapping() {
+	public HashMap<String,String> getPathMapping() {
 		ConfigManager.Configuration conf = properties.getConfigManager().currentConfiguration();
 		
 		String separator = Pattern.quote(PhpProjectProperties.DEBUG_PATH_MAPPING_SEPARATOR);
-		String[] locals = conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_LOCAL).split(separator);
 
-		if (locals.length <= 0)
+		String localMapping = conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_LOCAL);
+		String[] lm;
+		if (localMapping == null)
 		{
-			return null;
+			lm = new String[0];
+		} else {
+			lm = localMapping.split(separator);
 		}
-
-		HashMap mapping = new HashMap();
+		HashMap<String,String> mapping = new HashMap<String,String>();
 
 		int i = 0;
 		for (String rem : conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_REMOTE).split(separator))
 		{
-			mapping.put(rem, this.root.getPath() + System.getProperty("file.separator") + locals[i]);
+			String path;
+			String fileSeparator = System.getProperty("file.separator");
+			if (i+1 > lm.length)
+			{
+				path = this.root.getPath();
+			} else {
+				path = this.root.getPath() + fileSeparator + lm[i];
+			}
+
+			if (fileSeparator.equals("\\"))
+			{
+				path = path.replace('/', '\\');
+			}
+			mapping.put(rem, path);
+
 			i++;
 		}
 
@@ -131,7 +152,7 @@ public class UsedCode {
 		{
 			log("MAP " + o.toString() + " -> " + mapping.get(o));
 		}
-		
+
 		return mapping;
 	}
 	
