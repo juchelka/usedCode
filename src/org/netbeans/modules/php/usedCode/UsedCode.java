@@ -81,19 +81,23 @@ public class UsedCode {
 		for (FileUsage f : usage.values())
 		{
 			String usedPath = f.file;
-			for(Object remotePath : mapping.keySet())
+			if (mapping != null)
 			{
-				if (f.file.startsWith(remotePath.toString()))
+				for(Object remotePath : mapping.keySet())
 				{
-					String localPath = mapping.get((String) remotePath);
-					usedPath = f.file.replaceFirst(Pattern.quote(remotePath.toString()), localPath.replaceAll(Pattern.quote("\\"), "\\\\\\\\"));
-					if (System.getProperty("file.separator").equals("\\"))
+					if (f.file.startsWith(remotePath.toString()))
 					{
-						usedPath = usedPath.replace('/', '\\');
+						String localPath = mapping.get((String) remotePath);
+						usedPath = f.file.replaceFirst(Pattern.quote(remotePath.toString()), localPath.replaceAll(Pattern.quote("\\"), "\\\\\\\\"));
+						if (System.getProperty("file.separator").equals("\\"))
+						{
+							usedPath = usedPath.replace('/', '\\');
+						}
+						log("Mapping used: " + usedPath);
 					}
-					log("Mapping used: " + usedPath);
 				}
 			}
+			
 			FileVO fv = new FileVO(usedPath);
 			int max = 0;
 			for (int line : f.lines)
@@ -115,6 +119,11 @@ public class UsedCode {
 	public HashMap<String,String> getPathMapping() {
 		ConfigManager.Configuration conf = properties.getConfigManager().currentConfiguration();
 		
+		if (conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_REMOTE) == null)
+		{
+			return null;
+		}
+		
 		String separator = Pattern.quote(PhpProjectProperties.DEBUG_PATH_MAPPING_SEPARATOR);
 
 		String localMapping = conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_LOCAL);
@@ -125,8 +134,8 @@ public class UsedCode {
 		} else {
 			lm = localMapping.split(separator);
 		}
-		HashMap<String,String> mapping = new HashMap<String,String>();
 
+		HashMap<String,String> mapping = new HashMap<String,String>();
 		int i = 0;
 		for (String rem : conf.getValue(PhpProjectProperties.DEBUG_PATH_MAPPING_REMOTE).split(separator))
 		{
